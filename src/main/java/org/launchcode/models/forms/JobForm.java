@@ -21,7 +21,9 @@ public class JobForm {
 
     @NotNull
     private int employerId;
-
+    private int locationId;
+    private int coreCompetenciesId;
+    private int positionTypeId;
     /*
         TODO #3 - Included other fields needed to create a job,
         with correct validation attributes and display names.
