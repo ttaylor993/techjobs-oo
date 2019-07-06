@@ -15,12 +15,16 @@ public class Job {
     @Size(min = 3, max = 15)
     private String name;
 
+    @NotNull
     private Employer employer;
 
+    @NotNull
     private Location location;
 
+    @NotNull
     private PositionType positionType;
 
+    @NotNull
     private CoreCompetency coreCompetency;
 
     public Job() {

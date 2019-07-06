@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 
 /**
  * Created by LaunchCode
@@ -19,6 +20,8 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping(value = "job")
 public class JobController {
+
+    static ArrayList<Job> jobs = new ArrayList<>();
 
     private JobData jobData = JobData.getInstance();
 
@@ -35,25 +38,36 @@ public class JobController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.GET)
-    public String displayAddJobForm(Model model) {
-        Job job = jobData.findAll();
-        model.addAttribute("job", job);
+    public String add(Model model) {
+        model.addAttribute(new JobForm());
         return "new-job";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddForm(@ModelAttribute @Valid JobForm jobForm, Errors errors, Model model) {
-        JobData.add(jobForm);
+    public String add(@ModelAttribute @Valid JobForm jobForm, Errors errors, Model model) {
+        //Job newJob = new Job(jobForm);
+        //JobData.add(newJob);
         if (errors.hasErrors()) {
-            model.addAttribute(new JobForm());
+            //model.addAttribute(new JobForm());
             return "new-job";
         }
+
+        Job job = new Job();
+        job.setName(jobForm.getName());
+        job.setEmployer(jobData.getEmployers().findById(jobForm.getEmployerId()));
+        job.setLocation(jobData.getLocations().findById(jobForm.getLocationId()));
+        job.setPositionType(jobData.getPositionTypes().findById(jobForm.getPositionTypeId()));
+        job.setCoreCompetency(jobData.getCoreCompetencies().findById(jobForm.getCoreCompetenciesId()));
+
+        jobData.add(job);
+
+        return "redirect:?id=" + job.getId();
 
         // TODO #6 - Validate the JobForm model, and if valid, create a
         // new Job and add it to the jobData data store. Then
         // redirect to the job detail view for the new Job.
 
-        return "redirect job-detail";
+        //return "redirect:job-detail";
 
     }
 }
